@@ -307,3 +307,32 @@ true + 4
 Rebuild the stable design in Rust and compare the two runtimes.
 
 The key is to avoid starting with a large language. A tiny language that has a lexer, parser, semantic checker, bytecode compiler, VM, tests, and good error messages will teach you more than a large unfinished language.
+
+---
+
+### What is **Virtual Machine (VM)**?
+
+In the context of my compiler pipeline, a **Virtual Machine (VM)** is essentially a **software-simulated CPU**.
+
+Instead of translating your code directly into native machine code (like x86 or ARM) for your physical processor, your compiler translates it into **bytecode** (instructions like `PUSH`, `ADD`, `MUL`), and the VM is the engine that executes those instructions.
+
+---
+
+### What Makes Up Your Stacky VM?
+
+Looking back at my `src/stacky/vm.py`, the VM consists of two main components:
+
+1. **The Stack (Memory):** A simple Python list (`stack = []`) that acts as a Last-In, First-Out (LIFO) data structure. Numbers and intermediate results are pushed onto it and popped off it.
+2. **The Execution Loop:** A loop that iterates through your compiled bytecode instructions one by one, inspecting the opcode and modifying the stack accordingly:
+* When it sees `('PUSH', 2)`, it appends `2` to the stack.
+* When it sees `('ADD',)`, it pops the top two numbers, adds them together, and pushes the result back onto the stack.
+
+---
+
+### Why Do Compilers Use a Virtual Machine?
+
+* **Portability:** Because your VM is written in Python (and eventually Rust), your language (`Stacky`) can run on Windows, Mac, Linux, or even inside a browser without needing to change the compiler. It is completely independent of your physical hardware.
+* **Simplicity:** Building a real hardware compiler that talks directly to an Intel CPU is notoriously complex. Building a software VM is lightweight—it takes fewer than 30 lines of code to simulate an entire processor core using a stack and a `for` loop!
+* **The Heart of Modern Languages:** Famous languages use this exact architecture. For example, **Java** compiles down to bytecode (`.class` files) which are then executed by the JVM (Java Virtual Machine). **Python** itself compiles your `.py` files into `.pyc` bytecode, which is then executed by Python's own stack-based virtual machine.
+
+By building this VM, you've essentially implemented the execution layer of a real programming language!
